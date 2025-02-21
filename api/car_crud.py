@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from models import Car
-from schemas import CarS, CarM
+from api.schemas import CarS, CarM
 
 async def get_cars(db: AsyncSession):
     result = await db.execute(select(Car).order_by(Car.id))
@@ -13,7 +13,7 @@ async def get_cars(db: AsyncSession):
     return cars_list
 
 async def post_car(db: AsyncSession, car: CarS):
-    new_car = Car(model=car.model, price=car.price)
+    new_car = Car(model=car.model, price=car.price, owner_id=car.owner_id)
     db.add(new_car)
     await db.commit()
     await db.refresh(new_car)
@@ -43,6 +43,7 @@ async def patch_car(db: AsyncSession, car_id: int, updated_body: CarS):
 
     for key, value in updated_body.model_dump().items():
             setattr(car, key, value)
+            
     await db.commit()
 
     await db.refresh(car)
