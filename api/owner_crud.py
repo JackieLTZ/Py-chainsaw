@@ -26,3 +26,15 @@ async def post_owners(db: AsyncSession, owner: OwnerS):
     await db.refresh(new_owner)
 
     return OwnerS.model_validate(new_owner)
+
+async def delete_owners(db: AsyncSession, owner_id: int):
+    result = await db.execute(select(Owner).where(Owner.id == owner_id))
+    owner = result.scalar_one_or_none()
+
+    if owner is None:
+        return None
+    
+    await db.delete(owner)
+    await db.commit()
+
+    return 0 
