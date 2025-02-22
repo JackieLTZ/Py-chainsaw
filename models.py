@@ -1,6 +1,10 @@
 from typing import List
+
+from pydantic import validators
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+
 
 
 class Base(DeclarativeBase):
@@ -24,5 +28,13 @@ class Owner(Base):
     name: Mapped[str] = mapped_column(unique=True)
     age: Mapped[int] = mapped_column()
     cars: Mapped[List["Car"]] = relationship("Car", back_populates="owner")
+
+class Admin(Base):
+    __tablename__ = "admins"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(unique=True)
+    password: Mapped[str] = mapped_column()
+
 
     
